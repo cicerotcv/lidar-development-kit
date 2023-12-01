@@ -17,8 +17,6 @@ Para seguir este tutorial, é necessário:
     - GCC 9.4.0
     - SDK do LIDAR
     - Ferramentas de edição de texto (como um editor de texto ou IDE)
-- **Documentos:** 
-    - Documentação do LIDAR (se disponível)
 
 ## Motivação
 
