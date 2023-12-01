@@ -155,8 +155,8 @@ próprio passo de compilação.
 
 ### Download do SDK
 
-Baixe o SDK o https://download-en.slamtec.com/api/download/slamware-sdk-linux-x86_64_gcc9/4.6.1-rtm 
-e a extraia em algum local de fácil acesso em seu computador.
+Baixe o SDK para o GCC 9 que está disponível em https://www.slamtec.com/en/support#rplidar-mapper 
+e extraia em algum local de fácil acesso em seu computador.
 
 ### Patches no SDK
 
@@ -202,19 +202,80 @@ de demonstração de como o SDK e o LIDAR operam.
 
 ## Testando o LIDAR
 
-Conecte o LIDAR a um USB de seu computador ou então a alguma fonte externa para 
-que ele opere corretamente. Ele deve levar algo entre 20 a 30 segundos para entrar 
-em atividade girando sua parte móvel. Assim que isso acontecer, uma rede _Wi-Fi_ 
-será disponibilizada por ele para que um usuário se conecte.  O nome da rede deve 
-ser algo como **SLAMWARE-xxx**. Conecte-se e tente utilizar o programa `map2bmp` 
-para testar as capacidades de mapeamento do LIDAR.
 
-!!! note
-    O sensor guarda informações de orientação como posição (x, y, z) e rotação (yaw) para construir uma projeção do ambiente que está escaneando, o programa compilado extrai essa projeção e a guarda em uma imagem do tipo bmp (bitmap).
+![m1m1-lidar](./assets/m1m1-lidar.png)
 
-Para fins de demonstração, foi possível gerar as duas imagens a seguir. A primeira no centro do quarto andar do prédio 2, na região próxima aos elevadores e, na segunda, a sala de aula (laboratório) com os contornos melhor definidos por se tratar de um ambiente menor.
+
+### Requisitos
+- Computador Linux:
+    - capaz de executar o programa compilado anteriormente `map2bmp`;
+    - capaz de se conectar via `Wi-Fi`;
+- Fonte de alimentação para o **LIDAR M1M1** da Slamtec;
+
+### Alimentação
+
+Conecte o LIDAR via USB no seu computador ou então a alguma fonte para 
+que opere corretamente. 
+
+### Conexão
+
+A conexão ao LIDAR é feita via `Wi-Fi`. Após conectá-lo à fonte de alimentação,
+ele deve levar algo entre 20 e 30 segundos para entrar em atividade e diponibilizar 
+a rede **SLAMWARE-xxx**.
+
+
+
+### Funcionamento
+
+O dispositivo realiza medições continuamente enquanto está em atividade e armazena 
+de forma **iterativa** os pontos conhecidos no ambiente, permitindo que o usuário 
+realize deslocamentos espaciais para aumentar a qualidade do mapeamento.
+
+Quando o programa `map2bmp` é exectado, ele gera o arquivo de imagem `.bmp` (bitmap) 
+todo o mapeamento que foi possível de realizar até o momento.
+
+Para executar o programa:
+
+```bash
+# output_file é o nome do arquivo de imagem que será gerado;
+# 192.168.11.1 é o IP do dispositivo na rede interna;
+
+./map2bmp -o output_file "192.168.11.1"
+```
+
+!!! note "Orientação"
+    O sensor guarda informações de orientação como posição `(x, y, z)` e rotação 
+    (em torno do eixo `z`) para construir uma projeção do ambiente que está sendo mapeado.
+
+
+### Demonstração
+
+Para fins de demonstração, foram geradas as duas imagens a seguir.
+
+A primeira foi obtida meapeando o centro do quarto andar do prédio 2, na região 
+próxima aos elevadores. A segunda é o mapeamento da sala de aula (laboratório) 
+com os contornos melhor definidos por se tratar de um ambiente menor.
 
 ![demo](./assets/demo.png)
+
+
+## Trabalhos futuros
+
+A seguir, listamos algumas ideias de aplicações que podem ser desenvolvidas a partir
+deste ponto.
+
+### Mapeamento Realtime + Streaming de Frames
+
+Explore a possibilidade de adaptar o script `map2bmp` para transmitir em tempo 
+real as imagens capturadas pelo LIDAR como frames de vídeo pela rede.
+
+Uma biblioteca como OpenCV para receber e processar esse fluxo de imagens em 
+tempo real. Isso pode permitir a criação de um sistema de mapeamento dinâmico e contínuo.
+
+### Mapeamento Móvel
+
+Conecte o LIDAR a um veículo móvel (ex. um carro de controle remoto, drone, **aranha do Lab**). 
+Com isso, é possível realizar varreduras em movimento do ambiente. 
 
 ## Referências
 
@@ -238,3 +299,9 @@ https://unix.stackexchange.com/questions/208568/how-to-determine-the-maximum-num
 
 **What does make -jn mean?**. Disponível em:
 https://unix.stackexchange.com/questions/257403/what-does-make-jn-mean
+
+**Bootstrap error: libcc1 compiled as shared library despite --disable-shared**. Disponível em:
+https://gcc.gnu.org/bugzilla/show_bug.cgi?id=66955
+
+**All you need to know about Slamtec RPLIDAR, MAPPER and Slamware**. Disponível em: 
+https://www.seeedstudio.com/blog/2019/08/05/all-you-need-to-know-about-slamtec-rplidar-mapper-and-slamware/
